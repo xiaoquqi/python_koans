@@ -36,19 +36,27 @@ from runner.koan import *
 def score(dice):
     print "Current Dice is: ", dice
     dice_score = 0
+    if len(dice) == 0: return 0
+
     if dice.count(1) >= 3:
-        dice_score += 1000
+        dice_score += 1000 + (dice.count(1) - 3) * 100
         print "Three one: ", dice_score
-    if dice.count(1) < 3 and dice.count(1) > 0:
+    elif dice.count(1) < 3 and dice.count(1) > 0:
         dice_score += dice.count(1) * 100
         print "Less than three one: ", dice_score
-    if dice.count(5) < 3 and dice.count(5) > 0:
+
+    if dice.count(5) > 3:
+        dice_score += (dice.count(5) - 3) * 50
+    elif dice.count(5) < 3:
         dice_score += dice.count(5) * 50
-        print "Less than three five: ", dice_score
+
     if len(dice) - len(set(dice)) >= 2:
         for i in dice:
-            if dice.count(i) >= 3 and (i != 1 or i != 5):
-                dice_score += dice.count(1) * 100
+            if i == 1: continue
+            if dice.count(i) >= 3:
+                dice_score += i * 100
+                print "dice_socre=", dice_score
+                break
         print "Complex dice score: ", dice_score
     print "Return score: ", dice_score
     return dice_score
