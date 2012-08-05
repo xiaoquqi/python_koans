@@ -26,7 +26,7 @@ class AboutWithStatements(Koan):
             self.fail()
     
     def test_counting_lines(self):
-        self.assertEqual(__, self.count_lines("example_file.txt"))
+        self.assertEqual(4, self.count_lines("example_file.txt"))
     
     # ------------------------------------------------------------------
         
@@ -45,7 +45,7 @@ class AboutWithStatements(Koan):
             self.fail()
     
     def test_finding_lines(self):
-        self.assertEqual(__, self.find_line("example_file.txt"))
+        self.assertEqual("test\n", self.find_line("example_file.txt"))
     
     ## ------------------------------------------------------------------
     ## THINK ABOUT IT:
@@ -69,6 +69,13 @@ class AboutWithStatements(Koan):
     ## Python solves the problem using Context Managers. Consider the
     ## following code:
     ##
+    ## http://docs.python.org/release/2.5.2/lib/typecontextmanager.html
+    ## Python's with statement supports the concept of a runtime context defined by a context manager. This is implemented using two separate methods that allow user-defined classes to define a runtime context that is entered before the statement body is executed and exited when the statement ends.
+    ## The context management protocol consists of a pair of methods that need to be provided for a context manager object to define a runtime context:
+    ## __enter__()
+    ## Enter the runtime context and return either this object or another object related to the runtime context. The value returned by this method is bound to the identifier in the as clause of with statements using this context manager.
+    ## __exit__(exc_type, exc_val, exc_tb)
+    ## Exit the runtime context and return a Boolean flag indicating if any expection that occurred should be suppressed. If an exception occurred while executing the body of the with statement, the arguments contain the exception type, value and traceback information. Otherwise, all three arguments are None.
     
     class FileContextManager():
         def __init__(self, file_name):
@@ -92,16 +99,20 @@ class AboutWithStatements(Koan):
         return count
     
     def test_counting_lines2(self):
-        self.assertEqual(__, self.count_lines2("example_file.txt"))
+        self.assertEqual(4, self.count_lines2("example_file.txt"))
     
     # ------------------------------------------------------------------
     
     def find_line2(self, file_name):
-        # Rewrite find_line using the Context Manager.
-        pass
+        with self.FileContextManager(file_name) as f:
+            match = None
+            for line in f.readlines():
+                match = re.search('e', line)
+                if match:
+                    return line
     
     def test_finding_lines2(self):
-        self.assertEqual(__, self.find_line2("example_file.txt"))
+        self.assertEqual("test\n", self.find_line2("example_file.txt"))
         self.assertNotEqual(None, self.find_line2("example_file.txt"))
     
     # ------------------------------------------------------------------
@@ -114,4 +125,4 @@ class AboutWithStatements(Koan):
             return count
     
     def test_open_already_has_its_own_built_in_context_manager(self):
-        self.assertEqual(__, self.count_lines3("example_file.txt"))
+        self.assertEqual(4, self.count_lines3("example_file.txt"))
